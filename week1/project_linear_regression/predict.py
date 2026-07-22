@@ -1,0 +1,1 @@
+#predict based on w and b

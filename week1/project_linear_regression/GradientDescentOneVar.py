@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 import pandas as pd
 
 #configs:
-learning_rate = 0.0005
+learning_rate = 0.01
 
 df = pd.read_csv("data.csv")
 
@@ -31,13 +31,10 @@ def derivitive(x, y, w, b) -> tuple:
 #takes in the parameters and returns the tuple of the ideal w, b
 def gradient_descent(x, y, w, b, learning_rate) -> tuple:
     while True:
-        print(w)
         dw, db = derivitive(x, y, w, b)
-        w_old = w
         w -=learning_rate*dw
         b -=learning_rate*db
-        print(abs(w_old-w))
-        if abs(w_old - w) < 1e-8:
+        if abs(dw) < 1e-6 and abs(db) < 1e-6:
             return w, b
             
             
@@ -49,16 +46,21 @@ def cost(x, y, w, b):
         sum += (w*x[i] + b - y[i])**2
     return sum / (2*shape)
 
-w, b = gradient_descent(x_array, y_array, 0, 0, learning_rate)
+
+def main():
+    w, b = gradient_descent(x_array, y_array, 0, 0, learning_rate)
+    print(w, b)
 
 
 
-plt.plot(x_array, y_array, "ro")
-plt.axline((0,b), slope=w)
-plt.show()
+    plt.plot(x_array, y_array, "ro")
+    plt.axline((0,b), slope=w)
+    plt.show()
+    return (w, b)
 
 
-
+if __name__ == "__main__":
+    main()
 
 
 
