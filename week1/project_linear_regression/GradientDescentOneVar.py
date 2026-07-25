@@ -5,14 +5,14 @@ from matplotlib import pyplot as plt
 import pandas as pd
 
 #configs:
-learning_rate = 0.01
+learning_rate = 0.001
 
-df = pd.read_csv("data.csv")
+df = pd.read_csv("week1/project_linear_regression/data.csv")
 
 x_array = pd.Series.to_numpy(df["x"])
 y_array = pd.Series.to_numpy(df["y"])
-#returns the partial derivitives d/dw and d/db for the cost function, at points w and b
-def derivitive(x, y, w, b) -> tuple:
+#returns the partial derivatives d/dw and d/db for the cost function, at points w and b
+def derivative(x, y, w, b) -> tuple:
     
     shape = x.shape[0]
 
@@ -31,7 +31,7 @@ def derivitive(x, y, w, b) -> tuple:
 #takes in the parameters and returns the tuple of the ideal w, b
 def gradient_descent(x, y, w, b, learning_rate) -> tuple:
     while True:
-        dw, db = derivitive(x, y, w, b)
+        dw, db = derivative(x, y, w, b)
         w -=learning_rate*dw
         b -=learning_rate*db
         if abs(dw) < 1e-6 and abs(db) < 1e-6:
