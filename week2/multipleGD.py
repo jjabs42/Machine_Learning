@@ -7,7 +7,7 @@ import pandas as pd
 from pathlib import Path
 
 #just putting learning rate here for now, update for automatic later
-alpha = 0.03
+alpha = 0.1
 
 class MultipleLinearRegression:
     data: pd.DataFrame
@@ -22,6 +22,13 @@ class MultipleLinearRegression:
 
         #mX means matrix X, converts to data matrix
         mX = datapoints.to_numpy()
+
+        #changes to float for easier operations
+        mX = np.astype(mX, float)
+
+        mX = self.__normalizer(mX)
+
+       
         
         targets = mX[:,1]
 
@@ -48,7 +55,9 @@ class MultipleLinearRegression:
             beta-=derivative
 
             if np.abs(np.max(old_beta-beta)) < 1e-5:
-                return beta
+        
+                self.inverse_norm[1,1] = 1
+                return (self.y_scale)*(beta @ self.inverse_norm)
 
         
 
@@ -64,10 +73,30 @@ class MultipleLinearRegression:
         derivative = (1/matrix.shape[1])*(error @ matrix.transpose())
         return derivative
 
+    def __normalizer(self, data):
+
+        #using max normalization, can just multiply by its inverse instead of making a new function(scaled target)
+
+        norm_ar = np.zeros(data.shape[1])
+        for i in range(data.shape[1]):
+            norm_ar[i] = (max(data[:,i]))
+
+        self.y_scale = float(norm_ar[-1])
         
 
         
-    
+        diag = np.diag(1/norm_ar)
+        self.inverse_norm = diag
+        
+        return data @ (diag)
+
+
+        
+
+        
+a = time.time()    
 df = pd.read_csv("week2/data.csv")
 x = MultipleLinearRegression(df)
 print(x.run())
+b = time.time()
+print(b-a)
