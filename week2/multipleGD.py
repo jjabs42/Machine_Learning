@@ -5,9 +5,11 @@ import time
 import numpy as np
 import pandas as pd
 from pathlib import Path
+from matplotlib import pyplot as plt
 
-#just putting learning rate here for now, update for automatic later
-alpha = 0.1
+#just putting learning rate here for now, update later
+alpha = 0.01
+
 
 class MultipleLinearRegression:
     data: pd.DataFrame
@@ -15,22 +17,25 @@ class MultipleLinearRegression:
    
     def __init__(self, data):
         self.data = data
+        
+        
 
 
     def run(self):
         datapoints = self.data
-
+    
+        
         #mX means matrix X, converts to data matrix
-        mX = datapoints.to_numpy()
+        mX = datapoints.to_numpy(copy=True)
 
         #changes to float for easier operations
         mX = np.astype(mX, float)
 
-        mX = self.__normalizer(mX)
+        mX = self._normalizer(mX)
 
        
         
-        targets = mX[:,1]
+        targets = mX[:,-1]
 
         #assigns last vector to 1's, to help calculate the derivative of the bias and multiply the bias by 1
         oneMatrix = mX.copy().transpose()
@@ -39,13 +44,13 @@ class MultipleLinearRegression:
         #creates an array of the starting weights, and the value of the bias
         beta = np.zeros(mX.shape[1])
         
-
-        for _ in range(10000):
+        #place where weights update
+        for i in range(10000):
 
             old_beta = beta.copy()
             
            #gets derivative
-            derivative = self.__get_derivative(oneMatrix, beta, targets)
+            derivative = self._get_derivative(oneMatrix, beta, targets)
             
     
             #scales derivative vector by learning rate
@@ -54,15 +59,20 @@ class MultipleLinearRegression:
             #updates weights
             beta-=derivative
 
-            if np.abs(np.max(old_beta-beta)) < 1e-5:
+            print(self._cost(oneMatrix,beta,targets))
+            
+
+            if np.max(np.abs(old_beta-beta)) < 1e-6:
         
-                self.inverse_norm[1,1] = 1
+                self.inverse_norm[-1,-1] = 1
+                print(f"i = {i}")
                 return (self.y_scale)*(beta @ self.inverse_norm)
+        
 
         
 
 
-    def __get_derivative(self, matrix:np.ndarray, beta:np.ndarray, targets:np.ndarray):
+    def _get_derivative(self, matrix:np.ndarray, beta:np.ndarray, targets:np.ndarray):
 
        
        
@@ -73,7 +83,7 @@ class MultipleLinearRegression:
         derivative = (1/matrix.shape[1])*(error @ matrix.transpose())
         return derivative
 
-    def __normalizer(self, data):
+    def _normalizer(self, data):
 
         #using max normalization, can just multiply by its inverse instead of making a new function(scaled target)
 
@@ -86,17 +96,32 @@ class MultipleLinearRegression:
 
         
         diag = np.diag(1/norm_ar)
+        
         self.inverse_norm = diag
         
         return data @ (diag)
 
+    #getting cost function so can plot the iterations
+    
+    def _cost(self, matrix: np.ndarray, beta: np.ndarray, targets: np.ndarray):
+        # beta @ matrix calculates (w * x + b) for all rows instantly using the bias trick
+        y_hat = beta @ matrix
+        
+        # Calculate the normalized error vector
+        error = y_hat - targets
+
+       
+        
+        # Use dot product for lightning-fast squared summation
+        return (1/(2*matrix.shape[1])) * (np.dot(error, error))
+
+
 
         
-
-        
-a = time.time()    
-df = pd.read_csv("week2/data.csv")
-x = MultipleLinearRegression(df)
-print(x.run())
-b = time.time()
-print(b-a)
+if __name__ == "__main__":
+    a = time.time()    
+    df = pd.read_csv("week2/data.csv")
+    x = MultipleLinearRegression(df)
+    print(x.run())
+    b = time.time()
+    print(b-a)
