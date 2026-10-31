@@ -7,8 +7,8 @@ import pandas as pd
 from pathlib import Path
 from matplotlib import pyplot as plt
 
-#just putting learning rate here for now, update later
-alpha = 0.01
+#just putting learning rate here for now, update later with better approach
+alpha = 0.05
 
 
 class MultipleLinearRegression:
@@ -86,6 +86,7 @@ class MultipleLinearRegression:
     def _normalizer(self, data):
 
         #using max normalization, can just multiply by its inverse instead of making a new function(scaled target)
+        #there may be some cases where it doesn't work I still have to fix this for a more robust solution
 
         norm_ar = np.zeros(data.shape[1])
         for i in range(data.shape[1]):
@@ -107,12 +108,12 @@ class MultipleLinearRegression:
         # beta @ matrix calculates (w * x + b) for all rows instantly using the bias trick
         y_hat = beta @ matrix
         
-        # Calculate the normalized error vector
+        # Calculate the normalized error 
         error = y_hat - targets
 
        
         
-        # Use dot product for lightning-fast squared summation
+        # squared summation
         return (1/(2*matrix.shape[1])) * (np.dot(error, error))
 
 
@@ -120,7 +121,7 @@ class MultipleLinearRegression:
         
 if __name__ == "__main__":
     a = time.time()    
-    df = pd.read_csv("week2/data.csv")
+    df = pd.read_csv("week2/physicsLab.csv")
     x = MultipleLinearRegression(df)
     print(x.run())
     b = time.time()
