@@ -15,6 +15,11 @@ First got introduced to linear regression, made a simple model using for loops.
 ## Week 2
 Used vectorization to make linear regression much faster. I had a problem where I needed to scale only the x values by the weights, but I didn't want to edit the matrix too much. I replaced the targets with all 1's so the Y values aren't edited.
 
+1. Put data into the CSV file
+2. RUN 
+```
+bash python week2/multipleGD.py
+```
 
 
 
