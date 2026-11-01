@@ -1,5 +1,5 @@
 # Machine_Learning
-# Exercises and projects based on the machine learning course by Andrew Ng.
+## Exercises and projects loosely based on the machine learning course by Andrew Ng.
 ---
 ## Quick Start
 ---
