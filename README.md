@@ -17,8 +17,8 @@ Used vectorization to make linear regression much faster. I had a problem where 
 
 1. Put data into the CSV file
 2. RUN 
-```
-bash python week2/multipleGD.py
+```bash
+python week2/multipleGD.py
 ```
 
 
