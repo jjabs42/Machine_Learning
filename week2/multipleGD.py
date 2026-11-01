@@ -59,10 +59,12 @@ class MultipleLinearRegression:
             #updates weights
             beta-=derivative
 
-            print(self._cost(oneMatrix,beta,targets))
+            cost1 = self._cost(oneMatrix,beta,targets)
+            print(cost1)
             
 
             if np.max(np.abs(old_beta-beta)) < 1e-6:
+                
         
                 self.inverse_norm[-1,-1] = 1
                 print(f"i = {i}")
@@ -105,7 +107,7 @@ class MultipleLinearRegression:
     #getting cost function so can plot the iterations
     
     def _cost(self, matrix: np.ndarray, beta: np.ndarray, targets: np.ndarray):
-        # beta @ matrix calculates (w * x + b) for all rows instantly using the bias trick
+        # beta @ matrix calculates (w * x + b) for all rows instantly using 1's for the bias
         y_hat = beta @ matrix
         
         # Calculate the normalized error 
